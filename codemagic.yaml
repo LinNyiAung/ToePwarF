@@ -1,0 +1,14 @@
+workflows:
+  ios-build:
+    name: iOS build
+    instance_type: mac_mini
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: latest
+    scripts:
+      - name: Set deployment target
+        script: |
+          sed -i '' 's/platform :ios, .*/platform :ios, "15.5"/' ios/Podfile
+          cd ios && pod install --repo-update
+      - flutter build ios --release --no-codesign
