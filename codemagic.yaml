@@ -7,8 +7,11 @@ workflows:
       flutter: stable
       xcode: latest
     scripts:
-      - name: Set deployment target
+      - name: Ensure iOS platform and Podfile setup
         script: |
-          sed -i '' 's/platform :ios, .*/platform :ios, "15.5"/' ios/Podfile
-          cd ios && pod install --repo-update
-      - flutter build ios --release --no-codesign
+          if [ ! -f ios/Podfile ]; then
+            echo "platform :ios, '15.5'" > ios/Podfile
+            cd ios && pod install --repo-update
+          fi
+      - name: Build iOS app
+        script: flutter build ios --release --no-codesign
